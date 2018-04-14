@@ -6,6 +6,8 @@ Summary:        dpkg-divert alternative for non-Debian based distros
 License:        BSD-3-Clause
 URL:            https://github.com/g7/rpm-divert
 
+Source:         %{name}-%{version}.tar.bz2
+
 BuildArch:      noarch
 BuildRequires:  python3-base
 
@@ -13,7 +15,7 @@ BuildRequires:  python3-base
 %summary
 
 %prep
-%autosetup -n %{srcname}-%{version}
+%setup -q -n %{name}-%{version}
 
 %build
 python3 setup.py build
