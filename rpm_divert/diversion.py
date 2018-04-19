@@ -97,21 +97,30 @@ class Diversion:
 			**diversion_dict
 		)
 
-	def apply(self):
+	def apply(self, create_directory=False):
 		"""
 		Applies the diversion.
+
+		:params: create_directory: if True, creates the directory tree
+		of the diversion if it doesn't exist. Defaults to False.
 		"""
 
 		if self.applied:
 			return
 
+		diversion_dir = os.path.dirname(self.diversion)
+
 		logger.info("diverting \"%s\" to \"%s\"" % (self.source, self.diversion))
+
+		# Create directory tree if we should
+		if create_directory and not os.path.exists(diversion_dir):
+			os.makedirs(diversion_dir)
 
 		# Safety checks
 		if False in (
 			os.path.exists(self.source),
 			not os.path.exists(self.diversion),
-			os.path.isdir(os.path.dirname(self.diversion))
+			os.path.isdir(diversion_dir)
 		):
 			raise ApplyActionException("Unable to apply diversion, safety checks failed")
 
