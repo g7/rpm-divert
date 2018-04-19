@@ -42,10 +42,18 @@ __all__ = [
 				"type" : str,
 				"help" : "the package to process. If omitted, every diversion is applied."
 			}
+		),
+		(
+			"create-directory",
+			{
+				"arguments" : ["--create-directory"],
+				"action" : "store_true",
+				"help" : "if specified, creates the diversion directory if it doesn't exist."
+			}
 		)
 	]
 )
-def apply(database=None, package=None):
+def apply(database=None, package=None, create_directory=False):
 
 	for diversion in (
 		[
@@ -56,4 +64,4 @@ def apply(database=None, package=None):
 		if package is None
 		else database[package].diversions
 	):
-		diversion.apply()
+		diversion.apply(create_directory=create_directory)
