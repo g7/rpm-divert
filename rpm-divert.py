@@ -62,8 +62,9 @@ if __name__ == "__main__":
 		parser.parse_args(["-h"])
 		sys.exit(0) # Never called
 
-	commands.route_from_namespace(args, context_dict={"database" : db})
-
-	# Save
-	if command != "list":
-		db.save()
+	try:
+		commands.route_from_namespace(args, context_dict={"database" : db})
+	finally:
+		# Save
+		if command != "list":
+			db.save()
