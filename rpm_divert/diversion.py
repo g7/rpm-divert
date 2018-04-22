@@ -32,6 +32,8 @@ A Diversion representation.
 
 import logging
 
+import shutil
+
 import os
 
 logger = logging.getLogger(__name__)
@@ -46,6 +48,8 @@ class DiversionAction:
 	NOTHING = "nothing"
 
 	SYMLINK = "symlink"
+
+	COPY = "copy"
 
 class ApplyActionException(Exception):
 	pass
@@ -127,11 +131,16 @@ class Diversion:
 		try:
 			os.rename(self.source, self.diversion)
 
-			# Handle symlink action
 			if self.action == DiversionAction.SYMLINK:
+				# Handle symlink action
 				# TODO: check replacement's existence
 				logger.info("symlinking \"%s\" to \"%s\"" % (self.replacement, self.source))
 				os.symlink(self.replacement, self.source)
+			elif self.action == DiversionAction.COPY:
+				# Handle copy action
+				# TODO: check replacement's existence
+				logger.info("copying \"%s\" to \"%s\"" % (self.replacement, self.source))
+				shutil.copy2(self.replacement, self.source)
 		except:
 			raise ApplyActionException("Unable to apply diversion")
 
@@ -155,9 +164,9 @@ class Diversion:
 			raise UnapplyActionException("Unable to unapply diversion, safety checks failed")
 
 		try:
-			# Handle symlink action
-			if self.action == DiversionAction.SYMLINK:
-				logger.info("removing symlink \"%s\"" % self.source)
+			if self.action in (DiversionAction.SYMLINK, DiversionAction.COPY):
+				# Handle symlink and copy actions
+				logger.info("removing replacement \"%s\"" % self.source)
 				os.remove(self.source)
 
 			os.rename(self.diversion, self.source)
