@@ -136,6 +136,9 @@ class Diversion:
 				# TODO: check replacement's existence
 				logger.info("symlinking \"%s\" to \"%s\"" % (self.replacement, self.source))
 				os.symlink(self.replacement, self.source)
+
+				# Copy permission bits
+				shutil.copymode(self.diversion, self.source)
 			elif self.action == DiversionAction.COPY:
 				# Handle copy action
 				# TODO: check replacement's existence
