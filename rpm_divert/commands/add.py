@@ -67,7 +67,7 @@ __all__ = [
 				"arguments" : ["--action", "-a"],
 				"type" : str,
 				"default" : "nothing",
-				"help" : "The action, currently 'symlink' or 'nothing'. Defaults to 'nothing'"
+				"help" : "The action, currently 'symlink', 'copy' or 'nothing'. Defaults to 'nothing'"
 			}
 		),
 		(
