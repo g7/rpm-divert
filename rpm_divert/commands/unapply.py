@@ -42,18 +42,30 @@ __all__ = [
 				"type" : str,
 				"help" : "the package to process. If omitted, every diversion is unapplied."
 			}
+		),
+		(
+			"source",
+			{
+				"arguments" : ["--source", "-s"],
+				"type" : str,
+				"help" : "the diversion source to process. If omitted, every diversion is applied."
+			}
 		)
 	]
 )
-def unapply(database=None, package=None):
+def unapply(database=None, source=None, package=None):
 
 	for diversion in (
-		[
-			div
-			for pkg in database
-			for div in database[pkg].diversions
-		]
-		if package is None
-		else database[package].diversions
+		div
+		for div in (
+			[
+				div
+				for pkg in database
+				for div in database[pkg].diversions
+			]
+			if package is None
+			else database[package].diversions
+		)
+		if source is None or div.source == source
 	):
 		diversion.unapply()

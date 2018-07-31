@@ -44,6 +44,14 @@ __all__ = [
 			}
 		),
 		(
+			"source",
+			{
+				"arguments" : ["--source", "-s"],
+				"type" : str,
+				"help" : "the diversion source to process. If omitted, every diversion is applied."
+			}
+		),
+		(
 			"create-directory",
 			{
 				"arguments" : ["--create-directory"],
@@ -53,15 +61,19 @@ __all__ = [
 		)
 	]
 )
-def apply(database=None, package=None, create_directory=False):
+def apply(database=None, source=None, package=None, create_directory=False):
 
 	for diversion in (
-		[
-			div
-			for pkg in database
-			for div in database[pkg].diversions
-		]
-		if package is None
-		else database[package].diversions
+		div
+		for div in (
+			[
+				div
+				for pkg in database
+				for div in database[pkg].diversions
+			]
+			if package is None
+			else database[package].diversions
+		)
+		if source is None or div.source == source
 	):
 		diversion.apply(create_directory=create_directory)
