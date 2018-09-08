@@ -31,7 +31,7 @@ from distutils.core import setup
 
 setup(
 	name="rpm-divert",
-	version="0.0.4",
+	version="0.0.5",
 	description="dpkg-divert alternative for non-Debian based systems",
 	author='Eugenio Paolantonio',
 	author_email='me@medesimo.eu',
