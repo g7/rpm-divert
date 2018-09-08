@@ -159,6 +159,33 @@ class Diversion:
 
 		logger.info("restoring diversion \"%s\" to \"%s\"" % (self.source, self.diversion))
 
+		# Special case for DiversionAction.NOTHING:
+		#
+		# RPM's twisted package upgrade flow installs first the new
+		# files, and only then it starts processing triggers.
+		#
+		# When there is no replacement diversion, RPM will install the
+		# new version of the diverted file first and so rpm-divert's safety
+		# checks will fail as the source file exists
+		# (as is the new, updated, one) while it shouldn't.
+		#
+		# Handle this special case by removing the previously diverted
+		# files while not touching the new ones.
+		if self.action == DiversionAction.NOTHING and not False in (
+			os.path.exists(self.source),
+			os.path.exists(self.diversion)
+		):
+			logger.warning("Diversion source already exists, removing old diversion and marking as unapplied")
+
+			try:
+				os.remove(self.diversion)
+			except:
+				raise UnapplyActionException("Unable to unapply diversion")
+			else:
+				self.applied = False
+
+			return
+
 		# Safety checks
 		if False in (
 			(not os.path.exists(self.source) if self.action == DiversionAction.NOTHING else os.path.exists(self.source)),
